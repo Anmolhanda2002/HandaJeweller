@@ -1,0 +1,295 @@
+"use client";
+
+import React, { useState, useEffect, useRef } from "react";
+import { X, Sparkles, Video, ShieldCheck } from "lucide-react";
+import { JewelleryProduct, TryOnCategory } from "./types";
+import { useCamera } from "./hooks/useCamera";
+import { useVirtualTryOn } from "./hooks/useVirtualTryOn";
+import { useTryOnCapture } from "./hooks/useTryOnCapture";
+import CameraPreview from "./CameraPreview";
+import CameraControls from "./CameraControls";
+import JewellerySelector from "./JewellerySelector";
+import CapturePreview from "./CapturePreview";
+import TryOnError from "./TryOnError";
+import TryOnDebugPanel from "./TryOnDebugPanel";
+import { tryOnConfig } from "./config";
+
+interface VirtualTryOnModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  initialProduct: JewelleryProduct | null;
+}
+
+export default function VirtualTryOnModal({
+  isOpen,
+  onClose,
+  initialProduct,
+}: VirtualTryOnModalProps) {
+  const [selectedProduct, setSelectedProduct] = useState<JewelleryProduct | null>(initialProduct);
+  const [catalogProducts, setCatalogProducts] = useState<JewelleryProduct[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<TryOnCategory>(
+    initialProduct?.tryOn?.category || "earring"
+  );
+  const [hasStartedCamera, setHasStartedCamera] = useState(false);
+  const [lightingBoost, setLightingBoost] = useState(false);
+  const [showDebug, setShowDebug] = useState(false);
+
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  // 1. Camera Hook
+  const {
+    permissionState,
+    facingMode,
+    isCameraActive,
+    errorMessage,
+    startCamera,
+    stopCamera,
+    toggleFacingMode,
+  } = useCamera();
+
+  // 2. Tracking Hook
+  const {
+    provider,
+    isInitializing,
+    isTracking,
+    fps,
+    diagnostics,
+    trackingError,
+  } = useVirtualTryOn({
+    product: selectedProduct,
+    videoElement: videoRef.current,
+    canvasElement: canvasRef.current,
+    isActive: isCameraActive,
+  });
+
+  // 3. Capture Hook
+  const {
+    capturedPhoto,
+    isCapturing,
+    capturePhoto,
+    downloadPhoto,
+    sharePhoto,
+    clearPhoto,
+  } = useTryOnCapture();
+
+  // Update selected product if initialProduct changes
+  useEffect(() => {
+    if (initialProduct) {
+      setSelectedProduct(initialProduct);
+      if (initialProduct.tryOn?.category) {
+        setSelectedCategory(initialProduct.tryOn.category);
+      }
+    }
+  }, [initialProduct]);
+
+  // Fetch all try-on enabled products from store catalog
+  useEffect(() => {
+    if (!isOpen) return;
+
+    async function fetchTryOnProducts() {
+      try {
+        const res = await fetch("/api/products?limit=50");
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data.products)) {
+          // Filter products that have tryOnEnabled or assign default try-on
+          const tryOnItems: JewelleryProduct[] = json.data.products
+            .filter((p: any) => p.tryOnEnabled || p.tryOn?.assetUrl)
+            .map((p: any) => ({
+              _id: p._id,
+              name: p.name,
+              slug: p.slug,
+              price: p.price,
+              compareAtPrice: p.compareAtPrice,
+              images: p.images || [],
+              category: p.category,
+              tryOnEnabled: p.tryOnEnabled,
+              tryOn: p.tryOn,
+            }));
+
+          // If initialProduct not already in list, prepend
+          if (initialProduct && !tryOnItems.some((it) => it._id === initialProduct._id)) {
+            tryOnItems.unshift(initialProduct);
+          }
+
+          setCatalogProducts(tryOnItems);
+        }
+      } catch (err) {
+        console.warn("Could not fetch try-on catalog products:", err);
+      }
+    }
+
+    fetchTryOnProducts();
+  }, [isOpen, initialProduct]);
+
+  // Start Camera when user clicks "Start Camera"
+  const handleStartCamera = async () => {
+    setHasStartedCamera(true);
+    if (videoRef.current) {
+      await startCamera(videoRef.current);
+    }
+  };
+
+  // Close and cleanup
+  const handleClose = () => {
+    stopCamera();
+    clearPhoto();
+    setHasStartedCamera(false);
+    onClose();
+  };
+
+  // Handle Capture Action
+  const handleTakeSnapshot = async () => {
+    if (!videoRef.current || !canvasRef.current || !selectedProduct) return;
+    await capturePhoto(provider, videoRef.current, canvasRef.current, selectedProduct);
+  };
+
+  // Filter products matching current category
+  const filteredProducts = catalogProducts.filter(
+    (p) => (p.tryOn?.category || "earring") === selectedCategory
+  );
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-md animate-fade-in overflow-y-auto">
+      <div className="relative w-full max-w-4xl bg-stone-950 border border-amber-600/30 rounded-3xl p-4 sm:p-6 shadow-2xl flex flex-col gap-4 max-h-[96vh] overflow-y-auto">
+        {/* Header Bar */}
+        <div className="flex items-center justify-between border-b border-stone-800 pb-3">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center text-stone-950 font-bold shadow-md shadow-amber-900/40">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="font-serif font-bold text-base sm:text-lg text-stone-100 tracking-tight">
+                  Handa Jeweller Virtual Atelier
+                </h2>
+                <span className="hidden sm:inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                  {diagnostics?.isFallback ? "Free AI (Fallback)" : "Free AI AR"}
+                </span>
+              </div>
+              <p className="text-[11px] text-stone-400">
+                Experience royal heirloom jewelry calibrated to your natural movement
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleClose}
+            className="p-2 rounded-full text-stone-400 hover:text-white hover:bg-stone-900 transition"
+            title="Close Virtual Atelier"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Captured Portrait View */}
+        {capturedPhoto && selectedProduct ? (
+          <CapturePreview
+            photo={capturedPhoto}
+            product={selectedProduct}
+            onRetake={clearPhoto}
+            onDownload={() => downloadPhoto(`Handa-${selectedProduct.slug}`)}
+            onShare={sharePhoto}
+          />
+        ) : permissionState === "denied" || permissionState === "unavailable" ? (
+          /* Error / Permission Denied Screen */
+          <TryOnError
+            permissionState={permissionState}
+            errorMessage={errorMessage || trackingError}
+            onRetry={handleStartCamera}
+            onClose={handleClose}
+          />
+        ) : !hasStartedCamera ? (
+          /* Initial Permission Pre-Gate: User Must Explicitly Click "Start Camera" */
+          <div className="py-16 px-6 text-center space-y-6 max-w-md mx-auto">
+            <div className="w-20 h-20 rounded-full bg-amber-500/10 border-2 border-amber-500/40 text-amber-400 mx-auto flex items-center justify-center shadow-inner">
+              <Video className="w-10 h-10 animate-pulse" />
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="font-serif font-bold text-xl text-stone-100">
+                Ready to Experience Virtual Try-On?
+              </h3>
+              <p className="text-xs text-stone-400 leading-relaxed">
+                Click below to start your local browser camera. All computer vision processing happens completely on your device with 100% privacy.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleStartCamera}
+              className="w-full py-4 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-stone-950 font-serif text-sm font-bold uppercase tracking-wider transition shadow-xl shadow-amber-900/40"
+            >
+              Start Camera &amp; Try On
+            </button>
+
+            <div className="flex items-center justify-center gap-1.5 text-[11px] text-stone-500">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+              <span>Camera stream is processed locally &amp; never saved or uploaded</span>
+            </div>
+          </div>
+        ) : (
+          /* Live Virtual Try-On Workspace */
+          <div className="space-y-4">
+            {/* Viewport Box */}
+            <div className="relative">
+              <CameraPreview
+                videoRef={videoRef}
+                canvasRef={canvasRef}
+                isLoading={isInitializing}
+                isTracking={isTracking}
+                lightingBoost={lightingBoost}
+                category={selectedProduct?.tryOn?.category}
+              />
+
+              {/* Development HUD Overlay */}
+              {showDebug && (
+                <div className="absolute top-4 right-4 z-30">
+                  <TryOnDebugPanel
+                    diagnostics={diagnostics}
+                    fps={fps}
+                    isTracking={isTracking}
+                    productName={selectedProduct?.name}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Controls Bar */}
+            <CameraControls
+              onCapture={handleTakeSnapshot}
+              onFlipCamera={toggleFacingMode}
+              lightingBoost={lightingBoost}
+              onToggleLighting={() => setLightingBoost(!lightingBoost)}
+              selectedCategory={selectedCategory}
+              onSelectCategory={(cat) => {
+                setSelectedCategory(cat);
+                // Auto select first piece in category if available
+                const match = catalogProducts.find((p) => p.tryOn?.category === cat);
+                if (match) setSelectedProduct(match);
+              }}
+              isCapturing={isCapturing}
+              showDebugToggle={tryOnConfig.debugMode}
+              onToggleDebug={() => setShowDebug(!showDebug)}
+            />
+
+            {/* Product Switcher Carousel */}
+            <JewellerySelector
+              products={filteredProducts.length > 0 ? filteredProducts : catalogProducts}
+              selectedProduct={selectedProduct}
+              onSelectProduct={(prod) => {
+                setSelectedProduct(prod);
+                if (prod.tryOn?.category) {
+                  setSelectedCategory(prod.tryOn.category);
+                }
+              }}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

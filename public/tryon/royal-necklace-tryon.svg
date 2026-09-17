@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 320" width="500" height="320">
+  <defs>
+    <linearGradient id="goldChoker" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#805210" />
+      <stop offset="25%" stop-color="#D4AF37" />
+      <stop offset="50%" stop-color="#FFF3B0" />
+      <stop offset="75%" stop-color="#D4AF37" />
+      <stop offset="100%" stop-color="#805210" />
+    </linearGradient>
+    <radialGradient id="solitaireGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#EBF8FF" />
+      <stop offset="100%" stop-color="#90CDF4" />
+    </radialGradient>
+    <radialGradient id="emeraldGrad" cx="40%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#6EE7B7" />
+      <stop offset="50%" stop-color="#059669" />
+      <stop offset="100%" stop-color="#064E3B" />
+    </radialGradient>
+    <filter id="neckShadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <g filter="url(#neckShadow)">
+    <!-- Upper Collar Band Curve -->
+    <path d="M 50,40 Q 250,150 450,40" fill="none" stroke="url(#goldChoker)" stroke-width="10" stroke-linecap="round" />
+
+    <!-- Secondary Embedded Diamond Band -->
+    <path d="M 65,58 Q 250,175 435,58" fill="none" stroke="url(#goldChoker)" stroke-width="8" stroke-linecap="round" />
+
+    <!-- Clustered Diamond Bezels along upper arc -->
+    <g fill="url(#solitaireGlow)" stroke="#AA771C" stroke-width="1">
+      <circle cx="100" cy="72" r="6" />
+      <circle cx="140" cy="98" r="6.5" />
+      <circle cx="185" cy="120" r="7" />
+      <circle cx="250" cy="132" r="8" />
+      <circle cx="315" cy="120" r="7" />
+      <circle cx="360" cy="98" r="6.5" />
+      <circle cx="400" cy="72" r="6" />
+    </g>
+
+    <!-- Lower Royal Polki & Emerald Teardrop Fringe -->
+    <!-- Centerpiece Majestic Pendant Drop -->
+    <g transform="translate(250, 140)">
+      <!-- Gold Frame -->
+      <path d="M 0,0 C 22,25 35,55 35,75 C 35,95 19,112 0,112 C -19,112 -35,95 -35,75 C -35,55 -22,25 0,0 Z" fill="url(#goldChoker)" stroke="#805210" stroke-width="2" />
+      <!-- Center Emerald Cabochon -->
+      <path d="M 0,10 C 16,30 25,55 25,72 C 25,88 14,102 0,102 C -14,102 -25,88 -25,72 C -25,55 -16,30 0,10 Z" fill="url(#emeraldGrad)" />
+      <circle cx="0" cy="65" r="4" fill="#FFFFFF" fill-opacity="0.8" />
+      <!-- Pearl / Gold Pearl Terminal Drop -->
+      <circle cx="0" cy="122" r="8" fill="url(#goldChoker)" stroke="#AA771C" stroke-width="1.5" />
+      <circle cx="0" cy="122" r="3" fill="#FFFFFF" />
+    </g>
+
+    <!-- Flanking Left Drop 1 -->
+    <g transform="translate(195, 126)">
+      <path d="M 0,0 C 16,18 24,40 24,55 C 24,70 13,82 0,82 C -13,82 -24,70 -24,55 C -24,40 -16,18 0,0 Z" fill="url(#goldChoker)" />
+      <path d="M 0,8 C 11,22 17,40 17,52 C 17,64 9,74 0,74 C -9,74 -17,64 -17,52 C -17,40 -11,22 0,8 Z" fill="url(#solitaireGlow)" />
+      <circle cx="0" cy="90" r="6" fill="url(#emeraldGrad)" />
+    </g>
+
+    <!-- Flanking Right Drop 1 -->
+    <g transform="translate(305, 126)">
+      <path d="M 0,0 C 16,18 24,40 24,55 C 24,70 13,82 0,82 C -13,82 -24,70 -24,55 C -24,40 -16,18 0,0 Z" fill="url(#goldChoker)" />
+      <path d="M 0,8 C 11,22 17,40 17,52 C 17,64 9,74 0,74 C -9,74 -17,64 -17,52 C -17,40 -11,22 0,8 Z" fill="url(#solitaireGlow)" />
+      <circle cx="0" cy="90" r="6" fill="url(#emeraldGrad)" />
+    </g>
+
+    <!-- Flanking Left Drop 2 -->
+    <g transform="translate(150, 102)">
+      <path d="M 0,0 C 12,14 18,32 18,44 C 18,56 10,66 0,66 C -10,66 -18,56 -18,44 C -18,32 -12,14 0,0 Z" fill="url(#goldChoker)" />
+      <path d="M 0,6 C 8,17 13,32 13,41 C 13,50 7,58 0,58 C -7,58 -13,50 -13,41 C -13,32 -8,17 0,6 Z" fill="url(#emeraldGrad)" />
+      <circle cx="0" cy="72" r="5" fill="url(#goldChoker)" />
+    </g>
+
+    <!-- Flanking Right Drop 2 -->
+    <g transform="translate(350, 102)">
+      <path d="M 0,0 C 12,14 18,32 18,44 C 18,56 10,66 0,66 C -10,66 -18,56 -18,44 C -18,32 -12,14 0,0 Z" fill="url(#goldChoker)" />
+      <path d="M 0,6 C 8,17 13,32 13,41 C 13,50 7,58 0,58 C -7,58 -13,50 -13,41 C -13,32 -8,17 0,6 Z" fill="url(#emeraldGrad)" />
+      <circle cx="0" cy="72" r="5" fill="url(#goldChoker)" />
+    </g>
+
+    <!-- Flanking Outer Left Drop 3 -->
+    <g transform="translate(110, 78)">
+      <path d="M 0,0 C 10,12 14,26 14,36 C 14,46 8,54 0,54 C -8,54 -14,46 -14,36 C -14,26 -10,12 0,0 Z" fill="url(#goldChoker)" />
+      <circle cx="0" cy="28" r="8" fill="url(#solitaireGlow)" />
+    </g>
+
+    <!-- Flanking Outer Right Drop 3 -->
+    <g transform="translate(390, 78)">
+      <path d="M 0,0 C 10,12 14,26 14,36 C 14,46 8,54 0,54 C -8,54 -14,46 -14,36 C -14,26 -10,12 0,0 Z" fill="url(#goldChoker)" />
+      <circle cx="0" cy="28" r="8" fill="url(#solitaireGlow)" />
+    </g>
+  </g>
+</svg>
