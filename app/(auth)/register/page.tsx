@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Crown, Lock, Mail, User as UserIcon, Phone, ArrowRight } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 
-export default function RegisterPage() {
+function RegisterContent() {
   const router = useRouter();
   const { register } = useAuth();
 
@@ -171,3 +171,12 @@ export default function RegisterPage() {
     </div>
   );
 }
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div className="py-24 text-center">Loading registration...</div>}>
+      <RegisterContent />
+    </Suspense>
+  );
+}
+

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { X, ArrowRight } from "lucide-react";
@@ -10,7 +10,7 @@ interface GoogleLoginButtonProps {
   redirectTo?: string;
 }
 
-export default function GoogleLoginButton({
+function GoogleLoginButtonInner({
   text = "Continue with Google",
   redirectTo,
 }: GoogleLoginButtonProps) {
@@ -225,3 +225,22 @@ export default function GoogleLoginButton({
     </>
   );
 }
+
+export default function GoogleLoginButton(props: GoogleLoginButtonProps) {
+  return (
+    <Suspense
+      fallback={
+        <button
+          type="button"
+          disabled
+          className="w-full bg-white border border-neutral-300 text-neutral-400 font-semibold py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-3 opacity-60"
+        >
+          <span>{props.text || "Continue with Google"}</span>
+        </button>
+      }
+    >
+      <GoogleLoginButtonInner {...props} />
+    </Suspense>
+  );
+}
+
