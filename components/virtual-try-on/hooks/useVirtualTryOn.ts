@@ -13,6 +13,9 @@ interface UseVirtualTryOnProps {
   videoElement: HTMLVideoElement | null;
   canvasElement: HTMLCanvasElement | null;
   isActive: boolean;
+  userScale?: number;
+  userNudgeY?: number;
+  userNudgeX?: number;
 }
 
 export function useVirtualTryOn({
@@ -20,6 +23,9 @@ export function useVirtualTryOn({
   videoElement,
   canvasElement,
   isActive,
+  userScale = 1.0,
+  userNudgeY = 0,
+  userNudgeX = 0,
 }: UseVirtualTryOnProps) {
   const [provider, setProvider] = useState<VirtualTryOnProvider | null>(null);
   const [isInitializing, setIsInitializing] = useState(false);
@@ -109,13 +115,18 @@ export function useVirtualTryOn({
             setIsTracking(true);
             setFps(trackingResult.fps);
 
-            // Render jewelry onto canvas
+            // Render jewelry onto canvas with optional micro-adjustments
             provider.renderJewellery(
               ctx,
               product,
               trackingResult,
               canvasElement.width,
-              canvasElement.height
+              canvasElement.height,
+              {
+                userScale,
+                userNudgeY,
+                userNudgeX,
+              }
             );
           } else {
             setIsTracking(false);
@@ -144,7 +155,7 @@ export function useVirtualTryOn({
     if (isRunningRef.current) {
       animFrameRef.current = requestAnimationFrame(runLoop);
     }
-  }, [provider, videoElement, canvasElement, product]);
+  }, [provider, videoElement, canvasElement, product, userScale, userNudgeY, userNudgeX]);
 
   // Start / Stop the animation loop
   useEffect(() => {

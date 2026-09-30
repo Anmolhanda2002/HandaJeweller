@@ -60,6 +60,10 @@ interface OrderDetail {
   orderStatus: string;
   timeline: OrderTimeline[];
   cancelledReason?: string;
+  advancePaymentAmount?: number;
+  balancePaymentAmount?: number;
+  isPartialCOD?: boolean;
+  canCancel?: boolean;
 }
 
 const ORDER_STEPS = [
@@ -146,12 +150,19 @@ export default function OrderDetailPage() {
 
   const currentStepIndex = ORDER_STEPS.findIndex((s) => s.key === order.orderStatus);
   const isCancelled = order.orderStatus === "cancelled";
-  const isEligibleForCancellation = ["pending", "confirmed"].includes(order.orderStatus);
+  // Non-cancellable if 50% advance COD or explicitly flagged
+  const isNonCancellable = order.isPartialCOD || order.canCancel === false || (order.advancePaymentAmount && order.advancePaymentAmount > 0 && order.paymentMethod === "cod");
+  const isEligibleForCancellation = !isNonCancellable && ["pending", "confirmed"].includes(order.orderStatus);
+
+  const handleTrackWhatsApp = () => {
+    const msg = `Namaste Handa Jeweller! Could you please provide the latest dispatch and delivery update for my Order ID: ${order.orderId}?`;
+    window.open(`https://wa.me/917717595732?text=${encodeURIComponent(msg)}`, "_blank");
+  };
 
   return (
     <div className="space-y-8">
       {/* Top Bar */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <Link
           href="/account/orders"
           className="inline-flex items-center gap-1.5 text-xs text-neutral-500 hover:text-neutral-900 font-medium transition"
@@ -159,14 +170,30 @@ export default function OrderDetailPage() {
           <ArrowLeft className="w-4 h-4" /> Back to My Orders
         </Link>
 
-        {isEligibleForCancellation && (
+        <div className="flex items-center gap-2">
+          {/* WhatsApp Tracking Button */}
           <button
-            onClick={() => setShowCancelModal(true)}
-            className="text-xs text-rose-600 hover:text-rose-700 font-semibold px-3 py-1.5 rounded-lg border border-rose-200 hover:bg-rose-50 transition"
+            onClick={handleTrackWhatsApp}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 transition"
           >
-            Cancel Order
+            <span>💬 Track on WhatsApp</span>
           </button>
-        )}
+
+          {isNonCancellable && !isCancelled && (
+            <span className="text-[11px] font-bold text-amber-900 bg-amber-50 border border-amber-300 px-3 py-1.5 rounded-lg flex items-center gap-1">
+              <span>⚠️ Non-Cancellable (50% Advance Paid)</span>
+            </span>
+          )}
+
+          {isEligibleForCancellation && (
+            <button
+              onClick={() => setShowCancelModal(true)}
+              className="text-xs text-rose-600 hover:text-rose-700 font-semibold px-3 py-1.5 rounded-lg border border-rose-200 hover:bg-rose-50 transition"
+            >
+              Cancel Order
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Main Order Card */}
@@ -337,6 +364,22 @@ export default function OrderDetailPage() {
                 <span>Total Amount</span>
                 <span>{formatPrice(order.total)}</span>
               </div>
+
+              {order.isPartialCOD || (order.advancePaymentAmount && order.advancePaymentAmount > 0) ? (
+                <div className="mt-2 pt-2 border-t border-amber-200/80 space-y-1.5 text-xs">
+                  <div className="flex justify-between font-bold text-emerald-800">
+                    <span>50% Advance Online (Razorpay):</span>
+                    <span>{formatPrice(order.advancePaymentAmount || Math.round(order.total * 0.5))} (PAID)</span>
+                  </div>
+                  <div className="flex justify-between font-bold text-amber-900">
+                    <span>50% Balance on Doorstep Delivery:</span>
+                    <span>{formatPrice(order.balancePaymentAmount || (order.total - Math.round(order.total * 0.5)))} (DUE)</span>
+                  </div>
+                  <div className="text-[10px] text-amber-800 pt-1 font-medium">
+                    ⚠️ Strictly Non-Cancellable Order per jewellery vault terms.
+                  </div>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>

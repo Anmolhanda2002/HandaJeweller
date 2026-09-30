@@ -1,0 +1,156 @@
+================================================================================
+HANDA JEWELLER — OFFICIAL ATELIER SPECIFICATIONS & CATALOG DATA
+================================================================================
+
+1. BRAND & STORE IDENTITY
+--------------------------------------------------------------------------------
+Store Name:           Handa Jeweller
+Brand Tagline:        Timeless Royal Craftsmanship & Certified Fine Jewelry
+Founded:              1985 (Four decades of master craftsmanship)
+Flagship Boutique:    Datarpur, Talwara Main Market, District Hoshiarpur, Punjab, India
+Postal PIN:           144216
+Official WhatsApp:    +91 77175 95732
+Concierge Phone:      +91 77175 95732
+Official Email:       handaanmol073@gmail.com
+Purity Accreditations: 100% BIS Hallmarked 22 Karat (916) Gold
+Diamond Grading:      GIA (Gemological Institute of America) & IGI Certified
+Bullion Standards:    24 Karat 999 Fine Gold Bars, 22 Karat 916 Ornaments
+
+--------------------------------------------------------------------------------
+2. SYSTEM ACCESS & CREDENTIALS
+--------------------------------------------------------------------------------
+Admin Portal (Port 3001 or 9001):
+  - Email:    admin@handajeweller.com
+  - Password: Admin@123456
+  - Role:     Superadmin (Store Management, Order Dispatch, Catalog CMS)
+
+Customer Portal (Port 3000 or 9000):
+  - Email:    customer@example.com
+  - Password: Customer@123456
+  - Alternate: One-Click Google Login ("Continue with Google")
+
+Database:
+  - Engine:   MongoDB Atlas
+  - Cluster:  cluster0.m6b8l3b.mongodb.net
+  - DB Name:  handajeweller
+
+--------------------------------------------------------------------------------
+3. CURATED MASTERPIECE PRODUCT CATALOG
+--------------------------------------------------------------------------------
+
+[COLLECTION 1: SOLITAIRES & DIAMOND RINGS]
+- Product: Solitaire Diamond Crown Ring (1.50 Carat)
+  SKU: HJ-RNG-001
+  Purity: 18K White Gold (750) with VVS1 Clarity, E-Color Natural Diamond
+  Price: ₹2,15,000 | Stock: 4
+  Certification: GIA Certified #2185493012
+
+- Product: Royal Nizam Pavé Engagement Ring
+  SKU: HJ-RNG-002
+  Purity: 18K Yellow Gold with 0.85ct Round Brilliant Center Solitaire
+  Price: ₹1,28,000 | Stock: 6
+  Certification: IGI Certified
+
+- Product: Empress Emerald-Cut Diamond Ring (2.00 Carat)
+  SKU: HJ-RNG-003
+  Purity: Platinum 950 with VVS2 Natural Solitaire
+  Price: ₹3,45,000 | Stock: 2
+  Certification: GIA Certified
+
+[COLLECTION 2: 22K GOLD & POLKI NECKLACES]
+- Product: Royal Nizam Kundan Choker
+  SKU: HJ-NCK-001
+  Purity: 22K Yellow Gold (916 BIS Hallmarked) with Uncut Basra Pearls
+  Gross Weight: 84.50 grams | Net Gold: 62.00 grams
+  Price: ₹4,85,000 | Stock: 3
+
+- Product: Imperial Meenakari Rajputana Hansli
+  SKU: HJ-NCK-002
+  Purity: 22K Antique Gold with Hand-enameled Royal Peacock Meenakari
+  Gross Weight: 68.20 grams
+  Price: ₹3,75,000 | Stock: 5
+
+- Product: Colombian Emerald Rivera Haar
+  SKU: HJ-NCK-003
+  Purity: 18K Yellow Gold with Certified Natural Colombian Emeralds
+  Price: ₹5,60,000 | Stock: 2
+
+[COLLECTION 3: ROYAL BRIDAL TROUSSEAU]
+- Product: Maharaja Heritage 7-Piece Bridal Set
+  SKU: HJ-BRL-001
+  Includes: Grand Choker, Rani Haar, Matching Jhumkis, Maang Tikka, Nath, Hathphool (2)
+  Purity: 22K BIS Hallmarked Gold with Bikaneri Jadau Polki
+  Gross Weight: 245.00 grams
+  Price: ₹14,50,000 | Stock: 2 (Made to order with bespoke fitting)
+
+[COLLECTION 4: DIAMOND DROPS & EARRINGS]
+- Product: Solitaire Diamond Teardrops
+  SKU: HJ-EAR-001
+  Purity: 18K Rose Gold with 1.20ct Natural Diamonds
+  Price: ₹1,15,000 | Stock: 8
+
+- Product: Chandbali Royal Polki Drops
+  SKU: HJ-EAR-002
+  Purity: 22K Gold with South Sea Pearls and Polki Diamonds
+  Price: ₹1,65,000 | Stock: 5
+
+[COLLECTION 5: ARTIFICIAL & FASHION JEWELLERY]
+- Product: The Jodha Bai Royal Kundan Artificial Choker Set
+  SKU: HJ-ART-001
+  Material: Micro Gold Plated Brass & Faux Basra Pearls (Includes Earrings & Maang Tikka)
+  Price: ₹4,850 | Stock: 12
+- Product: Celebrity Crystal Solitaire American Diamond (AD) Set
+  SKU: HJ-ART-002
+  Material: Grade 5A Cubic Zirconia with Anti-Tarnish Triple Rhodium Silver Finish
+  Price: ₹3,750 | Stock: 15
+- Product: South Indian Matte Gold Temple Goddess Lakshmi Haar
+  SKU: HJ-ART-003
+  Material: Traditional Matte Antique Gold Finish with Kempu Stones
+  Price: ₹5,400 | Stock: 10
+- Product: Bespoke Jaipur Meenakari Royal Chandbali Drops
+  SKU: HJ-ART-004
+  Material: Hand-Enameled Peacock Meenakari & Pearl Drops
+  Price: ₹1,850 | Stock: 20
+
+--------------------------------------------------------------------------------
+4. LIVE BULLION BENCHMARK SPECIFICATIONS (BACKEND MANAGED)
+--------------------------------------------------------------------------------
+- Gold 24 Karat (999 Pure Bullion):   ₹7,680 / gram (₹76,800 / 10 grams)
+- Gold 22 Karat (916 BIS Hallmark):   ₹7,040 / gram (₹70,400 / 10 grams)
+- Gold 18 Karat (750 Fine Jewelry):   ₹5,760 / gram (₹57,600 / 10 grams)
+- Fine Silver 999 (Pure Chandi):       ₹93 / gram (₹93,000 / 1 kilogram)
+- Live API:                            /api/bullion-rates
+- Admin Management:                   Admin Portal -> Settings -> Live Bullion Rates
+
+--------------------------------------------------------------------------------
+5. COMMERCIAL PURCHASE POLICIES
+--------------------------------------------------------------------------------
+A. Cash on Delivery (COD) with 50% Advance Booking:
+   - For all high-value hallmarked gold and certified solitaires, Cash on Delivery
+     requires a 50% advance booking deposit paid online via Razorpay.
+   - The remaining 50% balance is collected in cash at the customer's doorstep.
+   - STRICT NON-CANCELLATION CLAUSE: Once confirmed and reserved in the vault,
+     50% Advance COD orders CANNOT be cancelled or refunded.
+
+B. 100% Full Payment via Razorpay:
+   - Zero balance on delivery.
+   - Accepts all Indian UPI apps (Google Pay, PhonePe, Paytm, BHIM),
+     Credit/Debit Cards (Visa, MasterCard, RuPay, Amex), and NetBanking.
+
+C. Pan-India Delivery:
+   - Delivers to all 36 Indian States and Union Territories.
+   - 100% Transit Insured armored / secure air courier delivery.
+   - Free shipping on orders ₹15,000 and above (Flat ₹250 for orders below).
+   - Standard 3% Indian GST applied at checkout.
+
+D. Promotional Coupons:
+   - Code: WELCOME10  (10% off subtotal, max discount ₹5,000)
+   - Code: ROYAL5000  (Flat ₹5,000 off on orders ₹50,000 and above)
+
+--------------------------------------------------------------------------------
+5. WHATSAPP & CLIENT CONCIERGE INTEGRATION
+--------------------------------------------------------------------------------
+- Direct Link:    https://wa.me/917717595732
+- Purpose:        Live delivery tracking, insured dispatch confirmation,
+                  unboxing guidelines, and VIP festival preview collections.
+================================================================================

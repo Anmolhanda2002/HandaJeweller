@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { X, Sparkles, Video, ShieldCheck } from "lucide-react";
 import { JewelleryProduct, TryOnCategory } from "./types";
 import { useCamera } from "./hooks/useCamera";
@@ -30,12 +30,39 @@ export default function VirtualTryOnModal({
   const [selectedCategory, setSelectedCategory] = useState<TryOnCategory>(
     initialProduct?.tryOn?.category || "earring"
   );
-  const [hasStartedCamera, setHasStartedCamera] = useState(false);
   const [lightingBoost, setLightingBoost] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
+  const [userScale, setUserScale] = useState(1.0);
+  const [userNudgeY, setUserNudgeY] = useState(0);
 
+  const handleChangeScale = (delta: number) => {
+    setUserScale((prev) => Math.max(0.4, Math.min(2.0, +(prev + delta).toFixed(2))));
+  };
+
+  const handleChangeNudgeY = (delta: number) => {
+    setUserNudgeY((prev) => prev + delta);
+  };
+
+  const handleResetAdjustments = () => {
+    setUserScale(1.0);
+    setUserNudgeY(0);
+  };
+
+  // Video and Canvas DOM node references
+  const [videoElement, setVideoElement] = useState<HTMLVideoElement | null>(null);
+  const [canvasElement, setCanvasElement] = useState<HTMLCanvasElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  const setVideoRef = useCallback((node: HTMLVideoElement | null) => {
+    videoRef.current = node;
+    setVideoElement(node);
+  }, []);
+
+  const setCanvasRef = useCallback((node: HTMLCanvasElement | null) => {
+    canvasRef.current = node;
+    setCanvasElement(node);
+  }, []);
 
   // 1. Camera Hook
   const {
@@ -58,9 +85,11 @@ export default function VirtualTryOnModal({
     trackingError,
   } = useVirtualTryOn({
     product: selectedProduct,
-    videoElement: videoRef.current,
-    canvasElement: canvasRef.current,
+    videoElement: videoElement,
+    canvasElement: canvasElement,
     isActive: isCameraActive,
+    userScale,
+    userNudgeY,
   });
 
   // 3. Capture Hook
@@ -122,11 +151,29 @@ export default function VirtualTryOnModal({
     fetchTryOnProducts();
   }, [isOpen, initialProduct]);
 
-  // Start Camera when user clicks "Start Camera"
-  const handleStartCamera = async () => {
-    setHasStartedCamera(true);
-    if (videoRef.current) {
-      await startCamera(videoRef.current);
+  // Auto-start camera as soon as modal opens and video node is mounted
+  useEffect(() => {
+    if (!isOpen) {
+      stopCamera();
+      return;
+    }
+
+    if (
+      videoElement &&
+      !isCameraActive &&
+      permissionState !== "requesting" &&
+      permissionState !== "denied" &&
+      permissionState !== "unavailable"
+    ) {
+      startCamera(videoElement);
+    }
+  }, [isOpen, videoElement, isCameraActive, permissionState, startCamera, stopCamera]);
+
+  // Explicit Retry Handler
+  const handleRetryCamera = async () => {
+    const target = videoElement || videoRef.current;
+    if (target) {
+      await startCamera(target);
     }
   };
 
@@ -134,14 +181,15 @@ export default function VirtualTryOnModal({
   const handleClose = () => {
     stopCamera();
     clearPhoto();
-    setHasStartedCamera(false);
     onClose();
   };
 
   // Handle Capture Action
   const handleTakeSnapshot = async () => {
-    if (!videoRef.current || !canvasRef.current || !selectedProduct) return;
-    await capturePhoto(provider, videoRef.current, canvasRef.current, selectedProduct);
+    const targetVideo = videoElement || videoRef.current;
+    const targetCanvas = canvasElement || canvasRef.current;
+    if (!targetVideo || !targetCanvas || !selectedProduct) return;
+    await capturePhoto(provider, targetVideo, targetCanvas, selectedProduct);
   };
 
   // Filter products matching current category
@@ -150,6 +198,8 @@ export default function VirtualTryOnModal({
   );
 
   if (!isOpen) return null;
+
+  const hasPermissionError = permissionState === "denied" || permissionState === "unavailable";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-md animate-fade-in overflow-y-auto">
@@ -194,56 +244,32 @@ export default function VirtualTryOnModal({
             onDownload={() => downloadPhoto(`Handa-${selectedProduct.slug}`)}
             onShare={sharePhoto}
           />
-        ) : permissionState === "denied" || permissionState === "unavailable" ? (
-          /* Error / Permission Denied Screen */
-          <TryOnError
-            permissionState={permissionState}
-            errorMessage={errorMessage || trackingError}
-            onRetry={handleStartCamera}
-            onClose={handleClose}
-          />
-        ) : !hasStartedCamera ? (
-          /* Initial Permission Pre-Gate: User Must Explicitly Click "Start Camera" */
-          <div className="py-16 px-6 text-center space-y-6 max-w-md mx-auto">
-            <div className="w-20 h-20 rounded-full bg-amber-500/10 border-2 border-amber-500/40 text-amber-400 mx-auto flex items-center justify-center shadow-inner">
-              <Video className="w-10 h-10 animate-pulse" />
-            </div>
-
-            <div className="space-y-2">
-              <h3 className="font-serif font-bold text-xl text-stone-100">
-                Ready to Experience Virtual Try-On?
-              </h3>
-              <p className="text-xs text-stone-400 leading-relaxed">
-                Click below to start your local browser camera. All computer vision processing happens completely on your device with 100% privacy.
-              </p>
-            </div>
-
-            <button
-              type="button"
-              onClick={handleStartCamera}
-              className="w-full py-4 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-stone-950 font-serif text-sm font-bold uppercase tracking-wider transition shadow-xl shadow-amber-900/40"
-            >
-              Start Camera &amp; Try On
-            </button>
-
-            <div className="flex items-center justify-center gap-1.5 text-[11px] text-stone-500">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-              <span>Camera stream is processed locally &amp; never saved or uploaded</span>
-            </div>
-          </div>
         ) : (
           /* Live Virtual Try-On Workspace */
           <div className="space-y-4">
             {/* Viewport Box */}
             <div className="relative">
               <CameraPreview
-                videoRef={videoRef}
-                canvasRef={canvasRef}
+                videoRef={setVideoRef}
+                canvasRef={setCanvasRef}
                 isLoading={isInitializing}
                 isTracking={isTracking}
+                isCameraActive={isCameraActive}
                 lightingBoost={lightingBoost}
                 category={selectedProduct?.tryOn?.category}
               />
+
+              {/* Error Overlay on top of preview when permission denied/unavailable */}
+              {hasPermissionError && (
+                <div className="absolute inset-0 z-30 bg-stone-950/95 backdrop-blur-md rounded-2xl flex items-center justify-center p-4">
+                  <TryOnError
+                    permissionState={permissionState}
+                    errorMessage={errorMessage || trackingError}
+                    onRetry={handleRetryCamera}
+                    onClose={handleClose}
+                  />
+                </div>
+              )}
 
               {/* Development HUD Overlay */}
               {showDebug && (
@@ -267,6 +293,7 @@ export default function VirtualTryOnModal({
               selectedCategory={selectedCategory}
               onSelectCategory={(cat) => {
                 setSelectedCategory(cat);
+                setUserNudgeY(0);
                 // Auto select first piece in category if available
                 const match = catalogProducts.find((p) => p.tryOn?.category === cat);
                 if (match) setSelectedProduct(match);
@@ -274,6 +301,11 @@ export default function VirtualTryOnModal({
               isCapturing={isCapturing}
               showDebugToggle={tryOnConfig.debugMode}
               onToggleDebug={() => setShowDebug(!showDebug)}
+              userScale={userScale}
+              onChangeScale={handleChangeScale}
+              userNudgeY={userNudgeY}
+              onChangeNudgeY={handleChangeNudgeY}
+              onResetAdjustments={handleResetAdjustments}
             />
 
             {/* Product Switcher Carousel */}

@@ -1,26 +1,93 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #FAF8F5;
+  --foreground: #1A1615;
+  --font-sans: var(--font-sans, "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+  --font-serif: var(--font-serif, "Playfair Display", Georgia, serif);
+  
+  /* Indian Royal Palace Tokens */
+  --royal-maroon: #4A0E17;
+  --royal-maroon-dark: #2D080E;
+  --royal-emerald: #08231A;
+  --royal-emerald-deep: #0D3327;
+  --royal-gold: #C5A059;
+  --royal-gold-bright: #D4AF37;
+  --royal-gold-light: #F6E7B9;
+  --royal-ivory: #FAF8F5;
+  --royal-cream: #F5EFEB;
+  --royal-charcoal: #1A1615;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #FAF8F5;
+  color: #1A1615;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+h1, h2, h3, h4, .font-serif {
+  font-family: var(--font-serif);
+}
+
+/* Royal Luxury Gold & Metallic Text Gradients */
+.gold-text-gradient {
+  background: linear-gradient(135deg, #B8860B 0%, #D4AF37 40%, #F5DEB3 70%, #C5A059 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-badge-bg {
+  background: linear-gradient(135deg, #C5A059 0%, #D4AF37 50%, #B8860B 100%);
+  color: #1A1615;
+}
+
+.maroon-royal-bg {
+  background: linear-gradient(135deg, #4A0E17 0%, #3B0A11 60%, #200408 100%);
+}
+
+.emerald-royal-bg {
+  background: linear-gradient(135deg, #08231A 0%, #061913 60%, #030C09 100%);
+}
+
+/* Continuous Marquee Animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 35s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

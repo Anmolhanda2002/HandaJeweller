@@ -81,7 +81,13 @@ export class PaidARProvider implements VirtualTryOnProvider {
     product: JewelleryProduct,
     tracking: TryOnTrackingResult,
     canvasWidth: number,
-    canvasHeight: number
+    canvasHeight: number,
+    options?: {
+      isMirrored?: boolean;
+      userScale?: number;
+      userNudgeX?: number;
+      userNudgeY?: number;
+    }
   ): void {
     if (this.fallbackProvider) {
       this.fallbackProvider.renderJewellery(
@@ -89,7 +95,8 @@ export class PaidARProvider implements VirtualTryOnProvider {
         product,
         tracking,
         canvasWidth,
-        canvasHeight
+        canvasHeight,
+        options
       );
     }
   }

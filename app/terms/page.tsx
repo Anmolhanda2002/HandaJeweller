@@ -27,6 +27,19 @@ export default function TermsPage() {
         <p>
           All orders are dispatched via tamper-proof, armored or secure air courier services with 100% transit insurance. The risk of loss transfers to the recipient only upon signed physical receipt.
         </p>
+
+        <h2 className="font-serif text-xl font-bold text-amber-900 pt-4">4. Cash on Delivery (50% Advance) &amp; Non-Cancellation Policy</h2>
+        <p>
+          To safeguard against fraudulent orders of high-value precious bullion and certified solitaires, all Cash on Delivery (COD) orders require a <strong>50% advance booking deposit</strong> paid online via Razorpay (UPI, Card, or NetBanking). The remaining 50% balance is collected in cash at the time of doorstep delivery.
+        </p>
+        <div className="p-4 bg-amber-50 rounded-2xl border border-amber-200 text-amber-950 font-medium">
+          <strong>Strict Non-Cancellation Clause:</strong> Due to individual hallmark registration, size customization, and high-security vault reservation, Cash on Delivery orders with 50% advance payment <strong>CANNOT be cancelled</strong> once confirmed and prepared for dispatch. The 50% booking deposit is non-refundable.
+        </div>
+
+        <h2 className="font-serif text-xl font-bold text-neutral-900 pt-4">5. WhatsApp Notifications &amp; Customer Concierge</h2>
+        <p>
+          Customers opting in to WhatsApp notifications will receive automated dispatch tracking, courier docket numbers, and delivery time windows directly on their verified Indian mobile number (+91 77175 95732). Customers may also request private salon previews and bespoke bridal trousseau consultations via WhatsApp.
+        </p>
       </div>
     </div>
   );

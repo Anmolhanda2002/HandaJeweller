@@ -131,6 +131,32 @@ export async function POST(req: NextRequest) {
     const shippingFee = discountedSubtotal >= freeShippingThreshold ? 0 : defaultShippingFee;
     const finalTotal = discountedSubtotal + tax + shippingFee;
 
+    // Calculate Partial COD / Advance Payment
+    const isPartial = paymentMethod === "cod" && (body.isPartialCOD !== false);
+    let advanceAmount = 0;
+    let balanceAmount = 0;
+    let determinedPaymentStatus: "pending" | "paid" | "partial" = "pending";
+    let isCancellable = true;
+
+    if (isPartial) {
+      // 50% Advance online payment via Razorpay, 50% balance cash on delivery
+      advanceAmount = Math.round(finalTotal * 0.5);
+      balanceAmount = finalTotal - advanceAmount;
+      determinedPaymentStatus = "partial";
+      isCancellable = false; // Strictly non-cancellable
+    } else if (paymentMethod === "razorpay" || paymentMethod === "card" || paymentMethod === "upi") {
+      advanceAmount = finalTotal;
+      balanceAmount = 0;
+      determinedPaymentStatus = "paid";
+    }
+
+    const {
+      razorpayOrderId = "",
+      razorpayPaymentId = "",
+      razorpaySignature = "",
+      whatsappUpdatesOptIn = true,
+    } = body;
+
     // Generate unique Order ID
     const dateStr = new Date().toISOString().slice(2, 10).replace(/-/g, "");
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
@@ -153,13 +179,23 @@ export async function POST(req: NextRequest) {
       shippingFee,
       total: finalTotal,
       paymentMethod,
-      paymentStatus: paymentMethod === "cod" ? "pending" : "paid",
+      paymentStatus: determinedPaymentStatus,
+      advancePaymentAmount: advanceAmount,
+      balancePaymentAmount: balanceAmount,
+      isPartialCOD: isPartial,
+      canCancel: isCancellable,
+      razorpayOrderId,
+      razorpayPaymentId,
+      razorpaySignature,
+      whatsappUpdatesOptIn: !!whatsappUpdatesOptIn,
       orderStatus: "pending",
       timeline: [
         {
           status: "pending",
           timestamp: new Date(),
-          note: `Order placed online with payment method: ${paymentMethod.toUpperCase()}`,
+          note: isPartial
+            ? `Order confirmed with 50% advance booking (₹${advanceAmount.toLocaleString("en-IN")}) paid via Razorpay. Balance ₹${balanceAmount.toLocaleString("en-IN")} payable on doorstep delivery. (Strictly non-cancellable per store policy)`
+            : `Order placed online with payment method: ${paymentMethod.toUpperCase()}`,
         },
       ],
     });

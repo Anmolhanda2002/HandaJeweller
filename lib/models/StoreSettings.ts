@@ -21,6 +21,11 @@ export interface IStoreSettings extends Document {
     youtube?: string;
   };
   storeDescription: string;
+  goldRate24k: number;
+  goldRate22k: number;
+  goldRate18k: number;
+  silverRate: number;
+  ratesLastUpdated?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -33,11 +38,11 @@ const StoreSettingsSchema = new Schema<IStoreSettings>(
       default: "Timeless Royal Craftsmanship & Certified Fine Jewelry",
     },
     logo: { type: String, default: "" },
-    contactEmail: { type: String, default: "contact@handajeweller.com" },
-    phone: { type: String, default: "+91 98765 43210" },
+    contactEmail: { type: String, default: "handaanmol073@gmail.com" },
+    phone: { type: String, default: "+91 77175 95732" },
     address: {
       type: String,
-      default: "Handa Heritage Tower, Gold Souk Mall, New Delhi, India",
+      default: "Datarpur, Talwara Main Market, Punjab",
     },
     currency: { type: String, default: "INR" },
     currencySymbol: { type: String, default: "₹" },
@@ -56,6 +61,11 @@ const StoreSettingsSchema = new Schema<IStoreSettings>(
       default:
         "Purveyors of exquisite hallmarked gold, certified solitaires, diamond polki, and heirloom bridal jewelry since 1985.",
     },
+    goldRate24k: { type: Number, default: 7680 },
+    goldRate22k: { type: Number, default: 7040 },
+    goldRate18k: { type: Number, default: 5760 },
+    silverRate: { type: Number, default: 93 },
+    ratesLastUpdated: { type: Date, default: Date.now },
   },
   { timestamps: true }
 );

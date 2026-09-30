@@ -57,33 +57,65 @@ export class FreeMediaPipeProvider implements VirtualTryOnProvider {
         "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm"
       );
 
-      // Create Face Landmarker (478 3D landmarks, GPU accelerated when available)
-      this.faceLandmarker = await vision.FaceLandmarker.createFromOptions(wasmFileset, {
-        baseOptions: {
-          modelAssetPath:
-            "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
-          delegate: "GPU",
-        },
-        runningMode: "VIDEO",
-        numFaces: 1,
-        minFaceDetectionConfidence: 0.5,
-        minFacePresenceConfidence: 0.5,
-        minTrackingConfidence: 0.5,
-      });
+      // Create Face Landmarker (try GPU first, fallback to CPU)
+      try {
+        this.faceLandmarker = await vision.FaceLandmarker.createFromOptions(wasmFileset, {
+          baseOptions: {
+            modelAssetPath:
+              "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
+            delegate: "GPU",
+          },
+          runningMode: "VIDEO",
+          numFaces: 1,
+          minFaceDetectionConfidence: 0.5,
+          minFacePresenceConfidence: 0.5,
+          minTrackingConfidence: 0.5,
+        });
+      } catch (gpuFaceErr) {
+        console.warn("GPU delegate not supported for FaceLandmarker, falling back to CPU:", gpuFaceErr);
+        this.faceLandmarker = await vision.FaceLandmarker.createFromOptions(wasmFileset, {
+          baseOptions: {
+            modelAssetPath:
+              "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
+            delegate: "CPU",
+          },
+          runningMode: "VIDEO",
+          numFaces: 1,
+          minFaceDetectionConfidence: 0.5,
+          minFacePresenceConfidence: 0.5,
+          minTrackingConfidence: 0.5,
+        });
+      }
 
-      // Create Hand Landmarker (21 3D landmarks for ring & bracelet tracking)
-      this.handLandmarker = await vision.HandLandmarker.createFromOptions(wasmFileset, {
-        baseOptions: {
-          modelAssetPath:
-            "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
-          delegate: "GPU",
-        },
-        runningMode: "VIDEO",
-        numHands: 1,
-        minHandDetectionConfidence: 0.5,
-        minHandPresenceConfidence: 0.5,
-        minTrackingConfidence: 0.5,
-      });
+      // Create Hand Landmarker (try GPU first, fallback to CPU)
+      try {
+        this.handLandmarker = await vision.HandLandmarker.createFromOptions(wasmFileset, {
+          baseOptions: {
+            modelAssetPath:
+              "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
+            delegate: "GPU",
+          },
+          runningMode: "VIDEO",
+          numHands: 1,
+          minHandDetectionConfidence: 0.5,
+          minHandPresenceConfidence: 0.5,
+          minTrackingConfidence: 0.5,
+        });
+      } catch (gpuHandErr) {
+        console.warn("GPU delegate not supported for HandLandmarker, falling back to CPU:", gpuHandErr);
+        this.handLandmarker = await vision.HandLandmarker.createFromOptions(wasmFileset, {
+          baseOptions: {
+            modelAssetPath:
+              "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
+            delegate: "CPU",
+          },
+          runningMode: "VIDEO",
+          numHands: 1,
+          minHandDetectionConfidence: 0.5,
+          minHandPresenceConfidence: 0.5,
+          minTrackingConfidence: 0.5,
+        });
+      }
 
       this.isInitialized = true;
     } catch (err) {
@@ -264,9 +296,15 @@ export class FreeMediaPipeProvider implements VirtualTryOnProvider {
     product: JewelleryProduct,
     tracking: TryOnTrackingResult,
     canvasWidth: number,
-    canvasHeight: number
+    canvasHeight: number,
+    options?: {
+      isMirrored?: boolean;
+      userScale?: number;
+      userNudgeX?: number;
+      userNudgeY?: number;
+    }
   ): void {
-    CanvasRenderer.render(ctx, product, tracking, canvasWidth, canvasHeight);
+    CanvasRenderer.render(ctx, product, tracking, canvasWidth, canvasHeight, options);
   }
 
   /**

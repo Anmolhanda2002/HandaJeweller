@@ -21,11 +21,8 @@ import {
 import { useCart, CartProduct } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { useAuth } from "@/context/AuthContext";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, getImageUrl } from "@/lib/utils";
 import ProductCard from "./ProductCard";
-import TryOnButton from "@/components/virtual-try-on/TryOnButton";
-import VirtualTryOnModal from "@/components/virtual-try-on/VirtualTryOnModal";
-import { JewelleryProduct } from "@/components/virtual-try-on/types";
 
 interface Variant {
   name: string;
@@ -97,7 +94,6 @@ export default function ProductDetailsView({
   const [quantity, setQuantity] = useState(1);
   const [isAdded, setIsAdded] = useState(false);
   const [activeTab, setActiveTab] = useState<"specs" | "desc" | "shipping">("specs");
-  const [isTryOnOpen, setIsTryOnOpen] = useState(false);
 
   // Review submission state
   const [reviews, setReviews] = useState<Review[]>(initialReviews);
@@ -187,7 +183,7 @@ export default function ProductDetailsView({
           <div className="space-y-4">
             <div className="relative aspect-[4/4.5] w-full rounded-2xl overflow-hidden bg-neutral-50 border border-neutral-100 shadow-sm">
               <Image
-                src={product.images[selectedImageIndex] || "/placeholder.png"}
+                src={getImageUrl(product.images[selectedImageIndex])}
                 alt={product.name}
                 fill
                 priority
@@ -205,12 +201,6 @@ export default function ProductDetailsView({
                 <Heart className={`w-5 h-5 ${isFavorited ? "fill-rose-600 text-rose-600" : ""}`} />
               </button>
 
-              {/* Floating Try-On Trigger */}
-              {product.tryOnEnabled && (
-                <div className="absolute bottom-4 left-4 z-10">
-                  <TryOnButton size="sm" onClick={() => setIsTryOnOpen(true)} />
-                </div>
-              )}
             </div>
 
             {/* Thumbnail Row */}
@@ -226,7 +216,7 @@ export default function ProductDetailsView({
                         : "border-neutral-200 opacity-70 hover:opacity-100"
                     }`}
                   >
-                    <Image src={img} alt="" fill className="object-cover" />
+                    <Image src={getImageUrl(img)} alt="" fill className="object-cover" />
                   </button>
                 ))}
               </div>
@@ -399,16 +389,6 @@ export default function ProductDetailsView({
               </button>
             </div>
 
-            {/* Virtual Try-On Primary Button */}
-            {product.tryOnEnabled && (
-              <div className="pt-2">
-                <TryOnButton
-                  size="lg"
-                  className="w-full py-4 rounded-xl text-xs uppercase tracking-widest"
-                  onClick={() => setIsTryOnOpen(true)}
-                />
-              </div>
-            )}
 
             {/* Trust Badges Pill */}
             <div className="grid grid-cols-3 gap-3 p-4 bg-neutral-50 rounded-2xl border border-neutral-100 text-center text-[11px] text-neutral-600">
@@ -627,13 +607,6 @@ export default function ProductDetailsView({
           </section>
         )}
       </div>
-
-      {/* Virtual Try-On Modal */}
-      <VirtualTryOnModal
-        isOpen={isTryOnOpen}
-        onClose={() => setIsTryOnOpen(false)}
-        initialProduct={product as unknown as JewelleryProduct}
-      />
     </div>
   );
 }

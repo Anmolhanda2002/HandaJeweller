@@ -7,6 +7,7 @@ export interface ICategory extends Document {
   description?: string;
   image?: string;
   parentCategory?: mongoose.Types.ObjectId;
+  categoryType?: "fine" | "artificial";
   displayOrder: number;
   status: "active" | "inactive";
   createdAt: Date;
@@ -20,6 +21,7 @@ const CategorySchema = new Schema<ICategory>(
     description: { type: String, default: "" },
     image: { type: String, default: "" },
     parentCategory: { type: Schema.Types.ObjectId, ref: "Category", default: null },
+    categoryType: { type: String, enum: ["fine", "artificial"], default: "fine", index: true },
     displayOrder: { type: Number, default: 0 },
     status: { type: String, enum: ["active", "inactive"], default: "active", index: true },
   },

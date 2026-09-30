@@ -45,11 +45,12 @@ export default function TryOnError({
 
       {isDenied && (
         <div className="bg-stone-950 p-4 rounded-xl text-left text-xs text-stone-400 space-y-2 border border-stone-800">
-          <div className="font-semibold text-amber-400">Quick Fix:</div>
-          <ol className="list-decimal pl-4 space-y-1">
-            <li>Click the lock or camera icon in your browser URL bar.</li>
-            <li>Change Camera permission from &ldquo;Block&rdquo; to &ldquo;Allow&rdquo;.</li>
-            <li>Refresh or click &ldquo;Retry Connection&rdquo; below.</li>
+          <div className="font-semibold text-amber-400">How to Allow Camera:</div>
+          <ol className="list-decimal pl-4 space-y-1.5 text-stone-300">
+            <li>Look at the top address bar next to <span className="font-mono text-amber-300">localhost:9000</span>.</li>
+            <li>Click the <strong>camera icon</strong>, <strong>site settings (tune / sliders) icon</strong>, or <strong>lock / shield icon</strong>.</li>
+            <li>Switch <strong>Camera</strong> from &ldquo;Block&rdquo; to &ldquo;Allow&rdquo;.</li>
+            <li>Click &ldquo;Retry Connection&rdquo; below (or reload the page).</li>
           </ol>
         </div>
       )}

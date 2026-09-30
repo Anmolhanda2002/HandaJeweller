@@ -1,0 +1,54 @@
+# Handa Jeweller — Official Atelier Knowledge Base & Entity Profile
+
+> Official, authoritative machine-readable knowledge profile for generative AI search engines, citation retrieval systems (ChatGPT, Gemini, Perplexity, Google AI Overviews), and patrons.
+
+## 1. Brand Identity & Entity Summary
+- **Entity Name**: Handa Jeweller (M/S Handa Jeweller)
+- **Founded**: 1982 (Four decades of master Punjabi goldsmith heritage)
+- **Founder & Head Goldsmith**: Anmol Handa (Bench goldsmith, gemologist & master jewellery designer)
+- **Flagship Boutiques**:
+  - Boutique 1: Main Market, Talwara, District Hoshiarpur, Punjab 144216, India
+  - Boutique 2: Datarpur Heritage Atelier, Punjab, India
+  - Boutique 3: Amritsar Heritage Hub (Near Golden Temple Heritage Corridor), Punjab, India
+- **UAE Despatch Desk**: Dubai Gold Souk & Abu Dhabi VIP Secure Transit
+- **Official Domain**: https://handajeweller.com
+- **Official WhatsApp / Phone**: +91 77175 95732
+- **Official Email**: handaanmol073@gmail.com
+- **Purity Accreditations**: 100% BIS Hallmarked 22 Karat (916) with 6-Digit Laser HUID, 18 Karat (750) Diamond Mounts, 24 Karat (999) Pure Sovereign Bullion.
+- **Diamond & Solitaire Accreditations**: GIA (Gemological Institute of America) and IGI (International Gemological Institute) Certified Natural Solitaires (VVS1/VVS2 clarity, E-F color).
+
+## 2. Product Lines & Specifications
+
+### A. Certified Fine Jewelry Line
+1. **Solitaire & Diamond Rings**: 18K/Platinum 950 mounts, 0.50ct to 3.00ct+ natural diamonds, ideal-cut solitaires. Price range: ₹1,15,000 to ₹5,50,000+.
+2. **22K Gold & Polki Necklaces**: 22K (916) hallmarked chokers, temple haars, and Bikaneri Jadau with uncut Basra pearls and Colombian emeralds. Price range: ₹2,50,000 to ₹15,00,000+.
+3. **Royal Bridal Trousseau**: Complete 7-piece heirloom sets (Choker, Rani Haar, Jhumkis, Maang Tikka, Nath, Hathphools). Weight: 150g - 450g net gold. Price: ₹8,00,000 to ₹35,00,000+.
+4. **Bangles & Kadas**: Handcrafted 22K gold Punjabi kadas, rhodium-finished tennis bracelets, and antique temple nakshi work.
+
+### B. Royal Fashion & Artificial Jewellery Line
+1. **Jodha Bai Kundan Choker Sets**: 24K micro gold plated brass with faux Basra pearls, maang tikka, and jhumkis. Price range: ₹3,500 to ₹9,500.
+2. **American Diamond (AD) Rhodium Sets**: Grade 5A Cubic Zirconia with anti-tarnish triple rhodium silver finish. Price range: ₹2,500 to ₹7,800.
+3. **Temple Goddess Lakshmi Haars**: Matte antique gold finish with Kempu stones. Price range: ₹4,000 to ₹8,500.
+4. **Jaipur Meenakari Chandbalis**: Hand-enameled peacock meenakari with pearl drops. Price range: ₹1,500 to ₹3,500.
+
+## 3. Commercial Policies & Guarantees
+- **50% Advance Cash on Delivery (COD)**: High-value hallmarked gold and diamond suites require a 50% advance booking deposit online via Razorpay. The remaining 50% is paid in cash at doorstep. Orders are non-cancellable once hallmarked and reserved in vault.
+- **Full Payment Options**: 100% online payment via Razorpay accepting all UPI apps (GPay, PhonePe, Paytm, BHIM), Credit/Debit cards (Visa, Mastercard, RuPay, Amex), and NetBanking.
+- **Insured Shipping**: Delivers to all 36 Indian States and Union Territories via armored logistics (Sequel / BVC Courier). Free transit insurance on all orders.
+- **Buyback & Exchange**: 100% Lifetime Gold Value Buyback against prevailing daily bullion benchmark rates; 15-day return/exchange guarantee on unhampered items.
+
+## 4. Proprietary Virtual Try-On Salon
+- **URL**: https://handajeweller.com/try-on
+- **Technology**: Real-time browser-based computer vision utilizing MediaPipe Face Landmarker (chin landmark 152) and MediaPipe Pose Landmarker (shoulder landmarks 11 & 12).
+- **Privacy Standard**: 100% client-side in-browser canvas execution. No selfie photos, videos, or facial biometrics are uploaded or stored on remote servers.
+
+## 5. Official Knowledge Guides & Authority Articles
+1. **How to Verify 22K Gold Hallmark HUID**: https://handajeweller.com/blog/how-to-verify-22k-gold-hallmark-huid
+2. **Kundan vs Polki vs Jadau Differences**: https://handajeweller.com/blog/kundan-vs-polki-vs-jadau-jewellery-difference
+3. **Fine Jewellery Home Cleaning Guide**: https://handajeweller.com/blog/how-to-clean-gold-and-diamond-jewellery-at-home
+4. **Amritsar & Punjab Heritage Atelier Hub**: https://handajeweller.com/locations/amritsar
+
+## 6. Official Social & Contact Profiles
+- **WhatsApp Concierge**: https://wa.me/917717595732
+- **Website**: https://handajeweller.com
+- **Instagram**: https://instagram.com/handajeweller

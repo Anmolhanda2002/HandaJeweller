@@ -63,6 +63,9 @@ export interface TryOnTrackingResult {
     neck: NeckPositions;
     nose: NormalizedLandmark;
     forehead: NormalizedLandmark;
+    hairline?: NormalizedLandmark;
+    glabella?: NormalizedLandmark;
+    nostril?: NormalizedLandmark;
     headPose: HeadPose;
     faceWidth: number;
     faceHeight: number;
@@ -125,7 +128,13 @@ export interface VirtualTryOnProvider {
     product: JewelleryProduct,
     tracking: TryOnTrackingResult,
     canvasWidth: number,
-    canvasHeight: number
+    canvasHeight: number,
+    options?: {
+      isMirrored?: boolean;
+      userScale?: number;
+      userNudgeX?: number;
+      userNudgeY?: number;
+    }
   ): void;
   capture(
     videoElement: HTMLVideoElement,

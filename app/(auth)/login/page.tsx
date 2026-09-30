@@ -3,8 +3,9 @@
 import React, { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Sparkles, Lock, Mail, ArrowRight } from "lucide-react";
+import { Crown, Lock, Mail, ArrowRight } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 
 function LoginContent() {
   const router = useRouter();
@@ -37,7 +38,7 @@ function LoginContent() {
         <div className="bg-white p-8 sm:p-10 rounded-3xl border border-neutral-200 shadow-xl space-y-6">
           <div className="text-center space-y-2">
             <div className="inline-flex items-center gap-1.5 text-amber-700 text-xs font-semibold uppercase tracking-widest">
-              <Sparkles className="w-3.5 h-3.5" /> Patron Portal
+              <Crown className="w-3.5 h-3.5 text-amber-700" /> Patron Portal
             </div>
             <h1 className="font-serif text-3xl font-bold text-neutral-900 tracking-tight">
               Sign In to Your Account
@@ -53,11 +54,15 @@ function LoginContent() {
             </div>
           )}
 
-          {/* Quick Demo Credentials Info */}
-          <div className="bg-amber-50/60 border border-amber-200/70 p-3 rounded-xl text-[11px] text-amber-900 space-y-0.5">
-            <p className="font-semibold">Demo Customer Account:</p>
-            <p>Email: <code className="font-mono bg-white px-1 py-0.5 rounded">customer@example.com</code></p>
-            <p>Password: <code className="font-mono bg-white px-1 py-0.5 rounded">Customer@123456</code></p>
+          {/* Google Sign In */}
+          <div className="space-y-3">
+            <GoogleLoginButton text="Sign in with Google" />
+            <div className="relative flex items-center justify-center">
+              <div className="border-t border-neutral-200 w-full"></div>
+              <span className="bg-white px-3 text-[11px] text-neutral-400 uppercase tracking-wider relative">
+                or sign in with email
+              </span>
+            </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4 text-xs">

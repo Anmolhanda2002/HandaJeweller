@@ -22,14 +22,14 @@ export default function ContactPage() {
             Connect With Our Ateliers
           </h1>
           <p className="text-xs text-neutral-500">
-            Book an in-person private viewing in New Delhi or speak directly with our certified diamond specialists.
+            Book an in-person private viewing at our showroom or speak directly with our certified diamond specialists.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Contact Details */}
           <div className="bg-neutral-900 text-white p-8 rounded-3xl space-y-6">
-            <h3 className="font-serif text-xl font-bold">New Delhi Showroom</h3>
+            <h3 className="font-serif text-xl font-bold">Handa Jeweller Showroom</h3>
             <p className="text-xs text-neutral-300 leading-relaxed">
               We welcome private consultations for bespoke bridal suites, solitaire rings, and high jewelry commissions.
             </p>
@@ -37,15 +37,15 @@ export default function ContactPage() {
             <div className="space-y-4 text-xs pt-4 border-t border-neutral-800">
               <div className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-amber-400 mt-0.5" />
-                <span>Handa Heritage Mansion, Main Market, South Extension Part 1, New Delhi 110049</span>
+                <span>Datarpur, Talwara Main Market, Punjab</span>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-amber-400" />
-                <span>+91 98765 43210 / 011-41234567</span>
+                <span>+91 77175 95732</span>
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-amber-400" />
-                <span>concierge@handajeweller.com</span>
+                <span>handaanmol073@gmail.com</span>
               </div>
             </div>
 
@@ -86,7 +86,7 @@ export default function ContactPage() {
                     <input
                       type="tel"
                       required
-                      placeholder="+91 98765 43210"
+                      placeholder="+91 77175 95732"
                       className="w-full bg-neutral-50 border border-neutral-300 rounded-xl px-3.5 py-2.5"
                     />
                   </div>

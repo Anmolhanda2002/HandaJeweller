@@ -54,6 +54,14 @@ export async function POST(
       return apiError("Forbidden: You cannot cancel this order", 403);
     }
 
+    // Enforce Non-Cancellable Policy for Cash on Delivery with 50% Advance Booking
+    if (order.isPartialCOD || order.canCancel === false || (order.advancePaymentAmount && order.advancePaymentAmount > 0)) {
+      return apiError(
+        "This order cannot be cancelled. As per Handa Jeweller policy for custom vault & hallmarked jewellery, orders placed with 50% advance booking deposit cannot be cancelled once confirmed.",
+        400
+      );
+    }
+
     // Check cancellation eligibility
     if (!["pending", "confirmed"].includes(order.orderStatus)) {
       return apiError(

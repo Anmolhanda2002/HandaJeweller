@@ -205,7 +205,9 @@ export class CanvasRenderer {
       const rightPerspective = Math.max(0.7, 1.0 - headPose.yaw * 0.22);
       ctx.scale(rightPerspective, rightPerspective);
 
-      ctx.drawImage(img, -drawWidth / 2, 0, drawWidth, drawHeight);
+      // In diamond-earring-tryon.svg, the stud post center is at y = 25 in a 200h SVG (12.5% down)
+      // Offset by -drawHeight * 0.125 centers the stud directly on the earlobe piercing
+      ctx.drawImage(img, -drawWidth / 2, -drawHeight * 0.125, drawWidth, drawHeight);
       ctx.restore();
     }
 
@@ -220,7 +222,7 @@ export class CanvasRenderer {
       const leftPerspective = Math.max(0.7, 1.0 + headPose.yaw * 0.22);
       ctx.scale(leftPerspective, leftPerspective);
 
-      ctx.drawImage(img, -drawWidth / 2, 0, drawWidth, drawHeight);
+      ctx.drawImage(img, -drawWidth / 2, -drawHeight * 0.125, drawWidth, drawHeight);
       ctx.restore();
     }
   }
@@ -244,10 +246,11 @@ export class CanvasRenderer {
     const { neck, headPose, faceWidth } = tracking.face;
 
     const aspect = img.naturalHeight / img.naturalWidth;
-    // Necklace width proportional to face and neck width
-    const drawWidth = faceWidth * width * 1.65 * scale;
+    // Necklace width proportional to face & neck width (refined fit)
+    const drawWidth = faceWidth * width * 1.35 * scale;
     const drawHeight = drawWidth * aspect;
 
+    // Anchor at the base of the throat / suprasternal notch
     const centerX = neck.neckCenter.x * width + offsetX;
     const centerY = neck.neckCenter.y * height + offsetY;
 
@@ -258,10 +261,13 @@ export class CanvasRenderer {
     ctx.rotate(effectiveRoll + rotation);
 
     // Foreshortening when customer tilts head up/down
-    const pitchScaleY = Math.max(0.7, 1.0 - Math.abs(headPose.pitch) * 0.3);
+    const pitchScaleY = Math.max(0.75, 1.0 - Math.abs(headPose.pitch) * 0.25);
     ctx.scale(1.0, pitchScaleY);
 
-    ctx.drawImage(img, -drawWidth / 2, -drawHeight * 0.25, drawWidth, drawHeight);
+    // The center arc dip of royal-necklace-tryon.svg is at y=150 in a 320h SVG (46.875% down)
+    // Anchoring at -drawHeight * 0.47 wraps the collar band snugly around the throat base,
+    // curving upward on the sides and draping the pendant gracefully over the upper clavicle.
+    ctx.drawImage(img, -drawWidth / 2, -drawHeight * 0.47, drawWidth, drawHeight);
     ctx.restore();
   }
 
@@ -351,15 +357,17 @@ export class CanvasRenderer {
     isMirrored: boolean
   ): void {
     if (!tracking.face) return;
-    const { nose, headPose, faceWidth } = tracking.face;
+    const { nose, nostril, headPose, faceWidth } = tracking.face;
 
     const aspect = img.naturalHeight / img.naturalWidth;
-    const size = faceWidth * width * 0.18 * scale;
+    const size = faceWidth * width * 0.14 * scale;
     const drawWidth = size;
     const drawHeight = size * aspect;
 
-    const posX = nose.x * width + offsetX;
-    const posY = nose.y * height + offsetY;
+    // Anchor on nostril alar if detected, otherwise nose base
+    const targetAnchor = nostril || nose;
+    const posX = targetAnchor.x * width + offsetX;
+    const posY = targetAnchor.y * height + offsetY;
 
     const effectiveRoll = isMirrored ? -headPose.roll : headPose.roll;
 
@@ -371,7 +379,7 @@ export class CanvasRenderer {
   }
 
   /**
-   * Render Maang Tikka (Forehead Center)
+   * Render Maang Tikka (Anchored at Hairline, Medallion Resting on Upper Forehead)
    */
   private static renderMaangTikka(
     ctx: CanvasRenderingContext2D,
@@ -386,22 +394,42 @@ export class CanvasRenderer {
     isMirrored: boolean
   ): void {
     if (!tracking.face) return;
-    const { forehead, headPose, faceWidth } = tracking.face;
+    const { hairline, glabella, forehead, headPose } = tracking.face;
 
-    const aspect = img.naturalHeight / img.naturalWidth;
-    const size = faceWidth * width * 0.35 * scale;
-    const drawWidth = size;
-    const drawHeight = size * aspect;
+    const topAnchor = hairline || forehead;
+    const bottomAnchor = glabella || { x: topAnchor.x, y: topAnchor.y + 0.14 };
 
-    const posX = forehead.x * width + offsetX;
-    const posY = forehead.y * height + offsetY;
+    // Measure exact forehead span from hairline (top) to glabella (eyebrows)
+    const dx = (bottomAnchor.x - topAnchor.x) * width;
+    const dy = (bottomAnchor.y - topAnchor.y) * height;
+    const foreheadSpan = Math.hypot(dx, dy);
 
+    const aspect = img.naturalHeight / img.naturalWidth; // SVG aspect: 350 / 200 = 1.75
+    // In maang-tikka-tryon.svg, the center of the medallion is at 235 / 350 = 0.671 down the image.
+    // The medallion should sit gracefully at ~70% down the forehead (well above the eyebrows).
+    const targetMedallionDrop = Math.max(20, foreheadSpan * 0.70);
+    const drawHeight = (targetMedallionDrop / 0.671) * scale;
+    const drawWidth = drawHeight / aspect;
+
+    const posX = topAnchor.x * width + offsetX;
+    const posY = topAnchor.y * height + offsetY;
+
+    // Align rotation along the anatomical central axis of the forehead
+    const foreheadAngle = Math.atan2(dy, dx) - Math.PI / 2;
     const effectiveRoll = isMirrored ? -headPose.roll : headPose.roll;
+    // Blend forehead vector angle with head roll for ultra-smooth realistic movement
+    const finalAngle = foreheadAngle * 0.75 + effectiveRoll * 0.25 + rotation;
 
     ctx.save();
     ctx.translate(posX, posY);
-    ctx.rotate(effectiveRoll + rotation);
-    ctx.drawImage(img, -drawWidth / 2, -drawHeight * 0.2, drawWidth, drawHeight);
+    ctx.rotate(finalAngle);
+
+    // Subtle 3D perspective if head turns left/right
+    const yawScaleX = Math.max(0.8, 1.0 - Math.abs(headPose.yaw) * 0.2);
+    ctx.scale(yawScaleX, 1.0);
+
+    // Top hook starts at y = 0 at the hairline; medallion drops down onto the forehead!
+    ctx.drawImage(img, -drawWidth / 2, 0, drawWidth, drawHeight);
     ctx.restore();
   }
 

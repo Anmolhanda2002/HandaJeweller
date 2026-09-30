@@ -4,17 +4,26 @@ import React, { forwardRef } from "react";
 import { Loader2, Sparkles } from "lucide-react";
 
 interface CameraPreviewProps {
-  videoRef: React.RefObject<HTMLVideoElement | null>;
-  canvasRef: React.RefObject<HTMLCanvasElement | null>;
+  videoRef: React.Ref<HTMLVideoElement>;
+  canvasRef: React.Ref<HTMLCanvasElement>;
   isLoading: boolean;
   isTracking: boolean;
+  isCameraActive?: boolean;
   lightingBoost: boolean;
   category?: string;
 }
 
 const CameraPreview = forwardRef<HTMLDivElement, CameraPreviewProps>(
   (
-    { videoRef, canvasRef, isLoading, isTracking, lightingBoost, category = "earring" },
+    {
+      videoRef,
+      canvasRef,
+      isLoading,
+      isTracking,
+      isCameraActive = false,
+      lightingBoost,
+      category = "earring",
+    },
     ref
   ) => {
     const isHandCategory =
@@ -77,11 +86,19 @@ const CameraPreview = forwardRef<HTMLDivElement, CameraPreviewProps>(
           <div className="absolute top-4 left-4 z-20 flex items-center gap-2 bg-stone-900/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-stone-700/60 text-xs">
             <span
               className={`w-2 h-2 rounded-full ${
-                isTracking ? "bg-emerald-400 animate-pulse" : "bg-amber-400"
+                isTracking
+                  ? "bg-emerald-400 animate-pulse"
+                  : isCameraActive
+                  ? "bg-amber-400"
+                  : "bg-amber-400 animate-ping"
               }`}
             />
             <span className="text-stone-300 font-medium">
-              {isTracking ? "Tracking Active" : "Detecting Landmarks..."}
+              {isTracking
+                ? "Tracking Active"
+                : isCameraActive
+                ? "Detecting Landmarks..."
+                : "Starting Camera..."}
             </span>
           </div>
         )}

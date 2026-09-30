@@ -3,8 +3,9 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Sparkles, Lock, Mail, User as UserIcon, Phone, ArrowRight } from "lucide-react";
+import { Crown, Lock, Mail, User as UserIcon, Phone, ArrowRight } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -48,7 +49,7 @@ export default function RegisterPage() {
         <div className="bg-white p-8 sm:p-10 rounded-3xl border border-neutral-200 shadow-xl space-y-6">
           <div className="text-center space-y-2">
             <div className="inline-flex items-center gap-1.5 text-amber-700 text-xs font-semibold uppercase tracking-widest">
-              <Sparkles className="w-3.5 h-3.5" /> Royal Membership
+              <Crown className="w-3.5 h-3.5 text-amber-700" /> Royal Membership
             </div>
             <h1 className="font-serif text-3xl font-bold text-neutral-900 tracking-tight">
               Create Patron Account
@@ -63,6 +64,17 @@ export default function RegisterPage() {
               {error}
             </div>
           )}
+
+          {/* Google Sign In */}
+          <div className="space-y-3">
+            <GoogleLoginButton text="Sign up with Google" />
+            <div className="relative flex items-center justify-center">
+              <div className="border-t border-neutral-200 w-full"></div>
+              <span className="bg-white px-3 text-[11px] text-neutral-400 uppercase tracking-wider relative">
+                or register with email
+              </span>
+            </div>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-4 text-xs">
             <div>
@@ -103,7 +115,7 @@ export default function RegisterPage() {
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+91 98765 43210"
+                  placeholder="+91 77175 95732"
                   className="w-full bg-neutral-50 border border-neutral-300 rounded-xl pl-9 pr-3.5 py-2.5 text-xs text-neutral-900 focus:outline-none focus:border-amber-600"
                 />
               </div>

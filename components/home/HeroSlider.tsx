@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, ArrowRight, Sparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowRight, Crown } from "lucide-react";
 
 interface Banner {
   _id: string;
@@ -44,7 +44,7 @@ export default function HeroSlider({ initialBanners = [] }: { initialBanners?: B
       <div className="relative h-[550px] sm:h-[650px] w-full bg-neutral-900 flex items-center justify-center text-center px-4">
         <div className="max-w-2xl text-white space-y-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/20 text-amber-300 text-xs font-semibold uppercase tracking-widest border border-amber-500/30">
-            <Sparkles className="w-3.5 h-3.5" /> Royal Fine Jewelry 2026
+            <Crown className="w-3.5 h-3.5 text-amber-400" /> Royal Fine Jewelry Atelier
           </div>
           <h1 className="font-serif text-4xl sm:text-6xl font-bold tracking-tight text-white leading-tight">
             Discover Treasures of Timeless Brilliance
@@ -78,15 +78,15 @@ export default function HeroSlider({ initialBanners = [] }: { initialBanners?: B
           priority
           className="object-cover object-center opacity-70 transition-all duration-1000 transform scale-100"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-neutral-950/90 via-neutral-950/60 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-transparent to-neutral-950/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#180407]/95 via-[#200408]/70 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#120305]/95 via-transparent to-[#180407]/40" />
       </div>
 
       {/* Content Container */}
       <div className="relative max-w-7xl mx-auto h-full px-6 sm:px-12 flex flex-col justify-center">
         <div className="max-w-xl space-y-4 sm:space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-[11px] font-semibold uppercase tracking-widest border border-amber-500/30 backdrop-blur-sm">
-            <Sparkles className="w-3.5 h-3.5" /> High Jewelry Maison
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#4A0E17]/60 text-[#F6E7B9] text-xs font-bold uppercase tracking-widest border border-[#C5A059]/40 backdrop-blur-sm">
+            <Crown className="w-3.5 h-3.5 text-[#D4AF37]" /> Royal Indian Atelier &bull; Est. 1982 Punjab &amp; UAE
           </div>
 
           <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.15]">
@@ -94,7 +94,7 @@ export default function HeroSlider({ initialBanners = [] }: { initialBanners?: B
           </h1>
 
           {currentBanner.subtitle && (
-            <p className="text-neutral-300 text-sm sm:text-base leading-relaxed line-clamp-3">
+            <p className="text-amber-100/90 text-sm sm:text-base leading-relaxed line-clamp-3">
               {currentBanner.subtitle}
             </p>
           )}
@@ -102,17 +102,17 @@ export default function HeroSlider({ initialBanners = [] }: { initialBanners?: B
           <div className="pt-2 flex items-center gap-4">
             <Link
               href={currentBanner.ctaUrl || "/shop"}
-              className="bg-amber-600 hover:bg-amber-500 text-neutral-950 font-semibold px-8 py-3.5 rounded-full text-xs uppercase tracking-widest transition flex items-center gap-2 shadow-xl shadow-amber-900/30"
+              className="bg-[#D4AF37] hover:bg-[#C5A059] text-[#1A1615] font-bold px-8 py-3.5 rounded-full text-xs uppercase tracking-widest transition flex items-center gap-2 shadow-xl shadow-amber-950/40"
             >
-              {currentBanner.ctaText || "Explore Catalog"}
+              {currentBanner.ctaText || "Explore Treasury"}
               <ArrowRight className="w-4 h-4" />
             </Link>
 
             <Link
               href="/category/bridal-sets"
-              className="hidden sm:inline-flex bg-white/10 hover:bg-white/20 text-white font-medium px-6 py-3.5 rounded-full text-xs uppercase tracking-widest transition border border-white/20 backdrop-blur-sm"
+              className="hidden sm:inline-flex bg-white/10 hover:bg-white/20 text-[#F6E7B9] font-bold px-6 py-3.5 rounded-full text-xs uppercase tracking-widest transition border border-[#C5A059]/40 backdrop-blur-sm"
             >
-              Bridal Trousseau
+              Shubh Vivah Trousseau
             </Link>
           </div>
         </div>

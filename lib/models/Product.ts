@@ -57,6 +57,7 @@ export interface IProduct extends Document {
   tags: string[];
   variants: IVariant[];
   specifications: ISpecification[];
+  jewelryType?: "fine" | "artificial";
   tryOnEnabled?: boolean;
   tryOn?: ITryOnConfig;
   status: "draft" | "active" | "inactive" | "out_of_stock";
@@ -105,6 +106,7 @@ const ProductSchema = new Schema<IProduct>(
         value: { type: String, required: true },
       },
     ],
+    jewelryType: { type: String, enum: ["fine", "artificial"], default: "fine", index: true },
     tryOnEnabled: { type: Boolean, default: false, index: true },
     tryOn: {
       type: { type: String, enum: ["2d", "3d"], default: "2d" },

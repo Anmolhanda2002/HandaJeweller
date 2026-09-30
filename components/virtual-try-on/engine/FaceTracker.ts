@@ -9,6 +9,9 @@ export class FaceTracker {
     neck: NeckPositions;
     nose: NormalizedLandmark;
     forehead: NormalizedLandmark;
+    hairline?: NormalizedLandmark;
+    glabella?: NormalizedLandmark;
+    nostril?: NormalizedLandmark;
     headPose: HeadPose;
     faceWidth: number;
     faceHeight: number;
@@ -30,30 +33,30 @@ export class FaceTracker {
     };
 
     // Ears / Tragus & Lobe anchors
-    // Subject's RIGHT ear (screen left): tragus 234, earlobe 132 or 93
+    // Landmark 234: right tragus, Landmark 177/132: right lobe boundary
+    // Landmark 454: left tragus, Landmark 401/361: left lobe boundary
     const rightTragus = landmarks[234];
-    const rightEarlobe = landmarks[132] || landmarks[93] || rightTragus;
+    const rightEarlobe = landmarks[177] || landmarks[132] || rightTragus;
 
-    // Subject's LEFT ear (screen right): tragus 454, earlobe 361 or 323
     const leftTragus = landmarks[454];
-    const leftEarlobe = landmarks[361] || landmarks[323] || leftTragus;
+    const leftEarlobe = landmarks[401] || landmarks[361] || leftTragus;
 
-    // Nose & Chin
+    // Nose & Chin & Forehead
     const noseTip = landmarks[1];
     const noseBase = landmarks[2] || landmarks[94] || noseTip;
     const chin = landmarks[152];
-    const foreheadTop = landmarks[10];
+    const hairline = landmarks[10]; // Supreme top hairline anchor for head jewelry
+    const glabella = landmarks[151] || landmarks[9]; // Between eyebrows
+    const nostril = landmarks[279] || landmarks[327] || landmarks[2];
 
     // Compute Head Pose Angles:
     // Roll: Rotation in 2D image plane.
     // Direction vector from right eye (screen left) to left eye (screen right):
     const deltaX = leftEyeOuter.x - rightEyeOuter.x;
     const deltaY = leftEyeOuter.y - rightEyeOuter.y;
-    // When level, deltaX > 0 and deltaY ≈ 0, so roll ≈ 0 radians
     const roll = Math.atan2(deltaY, deltaX);
 
     // Yaw: Left-Right turn
-    // Compare nose horizontal distance relative to face edges
     const faceRightSpan = Math.abs(noseTip.x - rightTragus.x);
     const faceLeftSpan = Math.abs(leftTragus.x - noseTip.x);
     const totalSpan = faceRightSpan + faceLeftSpan;
@@ -68,12 +71,11 @@ export class FaceTracker {
 
     // Face Dimensions
     const faceWidth = Math.hypot(leftTragus.x - rightTragus.x, leftTragus.y - rightTragus.y);
-    const faceHeight = Math.hypot(chin.x - foreheadTop.x, chin.y - foreheadTop.y);
+    const faceHeight = Math.hypot(chin.x - hairline.x, chin.y - hairline.y);
 
-    // Ear visibility and positioning
-    // Project earlobes slightly outward and downward along head orientation
-    const earOffsetY = faceHeight * 0.09;
-    const earOffsetX = faceWidth * 0.05;
+    // Ear visibility and positioning (snug at the actual earlobe piercing)
+    const earOffsetY = faceHeight * 0.04;
+    const earOffsetX = faceWidth * 0.035;
 
     const rightEarPos: NormalizedLandmark = {
       x: rightEarlobe.x - Math.cos(roll) * earOffsetX - Math.sin(roll) * earOffsetY,
@@ -95,9 +97,9 @@ export class FaceTracker {
       rightVisible: yaw < 0.65,
     };
 
-    // Neck & Collarbone Projection
-    // Lower chin extends into throat and clavicle base along torso axis
-    const neckDownwardOffset = faceHeight * 0.38;
+    // Neck & Collarbone Base (Throat / Suprasternal notch)
+    // Sits naturally approx 0.14 - 0.16 of faceHeight below chin (landmark 152)
+    const neckDownwardOffset = faceHeight * 0.15;
     const neckCenter: NormalizedLandmark = {
       x: chin.x - Math.sin(roll) * neckDownwardOffset,
       y: chin.y + Math.cos(roll) * neckDownwardOffset,
@@ -115,7 +117,10 @@ export class FaceTracker {
       ears,
       neck,
       nose: noseBase,
-      forehead: landmarks[151] || landmarks[10] || foreheadTop,
+      forehead: hairline,
+      hairline,
+      glabella,
+      nostril,
       headPose: { roll, yaw, pitch },
       faceWidth,
       faceHeight,

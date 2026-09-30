@@ -43,8 +43,16 @@ export interface IOrder extends Document {
   tax: number;
   shippingFee: number;
   total: number;
-  paymentMethod: "cod" | "card" | "upi";
-  paymentStatus: "pending" | "paid" | "failed";
+  paymentMethod: "cod" | "card" | "upi" | "razorpay";
+  paymentStatus: "pending" | "paid" | "partial" | "failed";
+  advancePaymentAmount?: number;
+  balancePaymentAmount?: number;
+  isPartialCOD?: boolean;
+  canCancel?: boolean;
+  razorpayOrderId?: string;
+  razorpayPaymentId?: string;
+  razorpaySignature?: string;
+  whatsappUpdatesOptIn?: boolean;
   orderStatus:
     | "pending"
     | "confirmed"
@@ -114,8 +122,16 @@ const OrderSchema = new Schema<IOrder>(
     tax: { type: Number, default: 0 },
     shippingFee: { type: Number, default: 0 },
     total: { type: Number, required: true, min: 0 },
-    paymentMethod: { type: String, enum: ["cod", "card", "upi"], default: "cod" },
-    paymentStatus: { type: String, enum: ["pending", "paid", "failed"], default: "pending", index: true },
+    paymentMethod: { type: String, enum: ["cod", "card", "upi", "razorpay"], default: "cod" },
+    paymentStatus: { type: String, enum: ["pending", "paid", "partial", "failed"], default: "pending", index: true },
+    advancePaymentAmount: { type: Number, default: 0 },
+    balancePaymentAmount: { type: Number, default: 0 },
+    isPartialCOD: { type: Boolean, default: false },
+    canCancel: { type: Boolean, default: true },
+    razorpayOrderId: { type: String, default: "" },
+    razorpayPaymentId: { type: String, default: "" },
+    razorpaySignature: { type: String, default: "" },
+    whatsappUpdatesOptIn: { type: Boolean, default: true },
     orderStatus: {
       type: String,
       enum: [

@@ -18,6 +18,7 @@ export async function GET(req: NextRequest) {
     const trending = searchParams.get("trending");
     const newArrival = searchParams.get("newArrival");
     const tryOn = searchParams.get("tryOn");
+    const jewelryType = searchParams.get("jewelryType") || searchParams.get("type");
     const page = parseInt(searchParams.get("page") || "1", 10);
     const limit = parseInt(searchParams.get("limit") || "12", 10);
 
@@ -26,6 +27,10 @@ export async function GET(req: NextRequest) {
     const filter: Record<string, any> = {
       status: "active",
     };
+
+    if (jewelryType) {
+      filter.jewelryType = jewelryType;
+    }
 
     if (categorySlug) {
       const categoryDoc = await Category.findOne({ slug: categorySlug });

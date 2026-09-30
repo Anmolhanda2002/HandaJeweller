@@ -29,6 +29,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
   register: (name: string, email: string, password: string, phone?: string) => Promise<{ success: boolean; message?: string }>;
+  loginWithGoogle: (googleData: { email: string; name?: string; googleId?: string }) => Promise<{ success: boolean; message?: string }>;
   logout: () => Promise<void>;
   updateProfile: (data: Partial<UserProfile>) => Promise<{ success: boolean; message?: string }>;
   refreshUser: () => Promise<void>;
@@ -96,6 +97,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const loginWithGoogle = async (googleData: { email: string; name?: string; googleId?: string }) => {
+    try {
+      const res = await fetch("/api/auth/google", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(googleData),
+      });
+      const data = await res.json();
+      if (data.success && data.data?.user) {
+        setUser(data.data.user);
+        return { success: true, message: data.message };
+      }
+      return { success: false, message: data.message || "Google login failed" };
+    } catch {
+      return { success: false, message: "Network error during Google authentication." };
+    }
+  };
+
   const logout = async () => {
     try {
       await fetch("/api/auth/logout", { method: "POST" });
@@ -129,6 +148,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isLoading,
         login,
         register,
+        loginWithGoogle,
         logout,
         updateProfile,
         refreshUser: fetchCurrentUser,

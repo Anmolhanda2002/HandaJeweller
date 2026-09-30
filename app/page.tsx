@@ -4,9 +4,12 @@ import Banner from "@/lib/models/Banner";
 import Category from "@/lib/models/Category";
 import Product from "@/lib/models/Product";
 import HeroSlider from "@/components/home/HeroSlider";
+import BullionRatesWidget from "@/components/home/BullionRatesWidget";
 import CategoryShowcase from "@/components/home/CategoryShowcase";
+import BridalAndFestiveShowcase from "@/components/home/BridalAndFestiveShowcase";
 import FeaturedSection from "@/components/home/FeaturedSection";
 import PromoBanner from "@/components/home/PromoBanner";
+import RoyalHeritagePromise from "@/components/home/RoyalHeritagePromise";
 
 export const revalidate = 0; // Always dynamic to reflect Admin updates immediately
 
@@ -58,9 +61,12 @@ export default async function HomePage() {
   return (
     <div className="space-y-0">
       <HeroSlider initialBanners={banners} />
+      <BullionRatesWidget />
       <CategoryShowcase categories={categories} />
+      <BridalAndFestiveShowcase />
       <FeaturedSection products={products} />
       <PromoBanner />
+      <RoyalHeritagePromise />
     </div>
   );
 }

@@ -58,29 +58,36 @@ export function useCamera() {
     setIsCameraActive(false);
   }, []);
 
+  const facingModeRef = useRef<CameraFacingMode>(facingMode);
+  facingModeRef.current = facingMode;
+
+  const selectedDeviceIdRef = useRef<string>(selectedDeviceId);
+  selectedDeviceIdRef.current = selectedDeviceId;
+
   /**
    * Request and start camera stream with multi-level constraint fallback.
    */
   const startCamera = useCallback(
     async (
       videoEl: HTMLVideoElement,
-      targetFacingMode: CameraFacingMode = facingMode,
+      targetFacingMode?: CameraFacingMode,
       targetDeviceId?: string
     ): Promise<MediaStream | null> => {
       videoRef.current = videoEl;
       setPermissionState("requesting");
       setErrorMessage("");
 
+      const activeFacing = targetFacingMode || facingModeRef.current;
+      const desiredDeviceId = targetDeviceId || selectedDeviceIdRef.current;
+
       // Stop any existing stream first
       stopCamera();
 
-      if (!navigator?.mediaDevices?.getUserMedia) {
+      if (typeof window === "undefined" || !navigator?.mediaDevices?.getUserMedia) {
         setPermissionState("unavailable");
-        setErrorMessage("Camera access is not supported by your browser or environment. Please use a modern browser such as Chrome, Safari, or Edge.");
+        setErrorMessage("Camera access is not supported by your browser or environment. Please use a modern browser such as Chrome, Brave, Safari, or Edge.");
         return null;
       }
-
-      const desiredDeviceId = targetDeviceId || selectedDeviceId;
 
       // Multi-tier constraints fallback list
       const constraintCandidates: MediaStreamConstraints[] = [
@@ -96,7 +103,7 @@ export function useCamera() {
             }
           : {
               video: {
-                facingMode: { ideal: targetFacingMode },
+                facingMode: { ideal: activeFacing },
                 width: { ideal: 1280 },
                 height: { ideal: 720 },
               },
@@ -106,7 +113,7 @@ export function useCamera() {
         {
           video: desiredDeviceId
             ? { deviceId: desiredDeviceId }
-            : { facingMode: targetFacingMode },
+            : { facingMode: activeFacing },
           audio: false,
         },
         // Tier 3: Bare minimum video request (any available camera)
@@ -142,14 +149,14 @@ export function useCamera() {
         if (error.name === "NotAllowedError" || error.name === "PermissionDeniedError") {
           setPermissionState("denied");
           setErrorMessage(
-            "Camera permission was denied. Please allow camera access in your browser settings (look for the camera icon in your address bar) and click Retry."
+            "Camera permission was denied. Please allow camera access in your browser settings (look for the lock, camera, or shield icon in your URL address bar) and click Retry Connection."
           );
         } else if (error.name === "NotFoundError" || error.name === "DevicesNotFoundError") {
           setPermissionState("unavailable");
-          setErrorMessage("No video camera sensor was detected on this device.");
+          setErrorMessage("No video camera sensor was detected on this device. Please connect a webcam.");
         } else if (error.name === "NotReadableError" || error.name === "TrackStartError") {
           setPermissionState("unavailable");
-          setErrorMessage("Camera is currently in use by another application (e.g. Zoom, Teams, or another tab). Please close other apps and try again.");
+          setErrorMessage("Camera is currently in use by another application (e.g. Zoom, Teams, or another browser tab). Please close other apps and try again.");
         } else {
           setPermissionState("unavailable");
           setErrorMessage(error.message || "Failed to start camera video feed.");
@@ -160,38 +167,42 @@ export function useCamera() {
       }
 
       streamRef.current = stream;
-      videoEl.srcObject = stream;
-      videoEl.playsInline = true;
       videoEl.muted = true;
+      videoEl.playsInline = true;
       videoEl.setAttribute("playsinline", "true");
+      videoEl.setAttribute("muted", "true");
+      videoEl.setAttribute("autoplay", "true");
+      videoEl.srcObject = stream;
 
       // Bind play action safely
       try {
         await videoEl.play();
       } catch (playErr) {
-        console.warn("Direct video play was prevented, waiting for loadeddata:", playErr);
-        // Fallback: wait for metadata / loadeddata
+        console.warn("Direct video play was prevented, waiting for loadeddata/canplay:", playErr);
+        // Fallback: wait for metadata / loadeddata / canplay
         await new Promise<void>((resolve) => {
           const onLoaded = () => {
             videoEl.removeEventListener("loadeddata", onLoaded);
+            videoEl.removeEventListener("canplay", onLoaded);
             videoEl.play().catch(() => {}).finally(() => resolve());
           };
           videoEl.addEventListener("loadeddata", onLoaded);
+          videoEl.addEventListener("canplay", onLoaded);
           // Safety timeout
-          setTimeout(resolve, 1200);
+          setTimeout(resolve, 1500);
         });
       }
 
       setPermissionState("granted");
       setIsCameraActive(true);
-      setFacingMode(targetFacingMode);
+      setFacingMode(activeFacing);
 
       // Query devices after permission is granted so device labels are available
       updateDeviceList();
 
       return stream;
     },
-    [facingMode, selectedDeviceId, stopCamera, updateDeviceList]
+    [stopCamera, updateDeviceList]
   );
 
   /**

@@ -25,7 +25,7 @@ export default function PrivacyPolicyPage() {
 
         <h2 className="font-serif text-xl font-bold text-neutral-900 pt-4">3. Contact & Inquiries</h2>
         <p>
-          If you have questions regarding your stored patron records or wish to request data erasure, please write to our privacy officer at <a href="mailto:privacy@handajeweller.com" className="text-amber-800 underline">privacy@handajeweller.com</a>.
+          If you have questions regarding your stored patron records or wish to request data erasure, please write to our privacy officer at <a href="mailto:handaanmol073@gmail.com" className="text-amber-800 underline">handaanmol073@gmail.com</a>.
         </p>
       </div>
     </div>
